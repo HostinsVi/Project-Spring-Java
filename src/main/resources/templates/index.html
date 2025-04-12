@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>Calculadora de IMC</title>
+        <link rel="stylesheet" th:href="@{/style.css}">
+
+    </head>
+    <body>
+        <div class="div-calculadora">
+            <h1>Calculadora de IMC</h1>
+            <form action="/" method="post">
+                <label for="peso">Peso (kg):</label>
+                <input type="number" name="peso" id="peso" step="0.01" min="0" required>
+
+                <label for="altura">Altura (m):</label>
+                <input type="number" name="altura" id="altura" step="0.01" min="0" required>
+
+                <button type="submit">Calcular IMC!</button>
+            </form>
+        </div>
+    </body>
+</html>
