@@ -1,4 +1,6 @@
 package ProjectSpringIO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +15,10 @@ import java.text.DecimalFormat;
 
 public class controller {
 
+	@Autowired
+	@Qualifier("methods")
+	private Methods methods;
+
 	@GetMapping
 	public String index() {
 		return "index";
@@ -21,29 +27,13 @@ public class controller {
 	@PostMapping
 	public String calcularIMC(@RequestParam("peso") double peso, @RequestParam("altura") double altura, RedirectAttributes redirectAttrs) {
 
-		if (peso <= 0 || altura <= 0) {
+		if (!methods.confirmarValores(peso, altura)) {
 			return "redirect:/";
 		}
 
-		double imc = peso / (altura*altura);
-		DecimalFormat df = new DecimalFormat("##.##");
-		String valorIMC = df.format(imc);
-
-		String indicacao;
-
-		if (imc < 18.5) {
-			indicacao = "Você está abaixo do peso ideal, vai comer uma pizza, seja feliz!";
-		} else if (imc <= 24.9) {
-			indicacao = "Você está no peso ideal, Parabéns!";
-		} else if (imc <= 25) {
-			indicacao = "Você está levemente acima do peso. uma maçã aqui e ali resolve!";
-		} else if (imc <= 30) {
-			indicacao = "Você está no primeiro nível de obesidade. Uma alimentação mais equilibrada é o segredo pra um eu mais equilibrado!";
-		} else if (imc <= 35) {
-			indicacao = "Voce está no segundo nível de obesidade. Vamo dar uma mudança no estilo de vida pra ter um futuro melhor!";
-		} else {
-			indicacao = "Você está no terceiro nível de obesidade. Talvez seja uma boa hora de buscar ajuda para mudar sua alimentação e melhorar sua saúde. Estamos torcendo por você!";
-		}
+		double imc = methods.calcularIMC(peso, altura);
+		String valorIMC = methods.formatarIMC(imc);
+		String indicacao = methods.gerarIndicacao(imc);
 
 		redirectAttrs.addFlashAttribute("peso", peso);
 		redirectAttrs.addFlashAttribute("altura", altura);
